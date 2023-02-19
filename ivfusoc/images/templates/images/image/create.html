@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}+{% endblock %}
+
+{% block content %}
+
+    <div class="upload-media">
+        <div class="upload-media__container">
+            <div class="upload-media__items">
+                <h1 class="upload-media-h1">Upload photo or video</h1>
+                <form action="." method="post" enctype="multipart/form-data" class="upload-media__form">
+                    {% csrf_token %}
+                    <input type="text" name="title" placeholder="Title" class="upload-media-from__input"><br>
+                    <input name="file" type="file" id="input__file" onchange="FileInput()" class="input input__file">
+                    <label for="input__file" class="input__file-button">
+                       <span class="input__file-icon-wrapper"><img class="input__file-icon" src="{% static 'account/img/upload.png' %}" alt="Choose file" width="25"></span>
+                       <span class="input__file-button-text">Choose file</span>
+                    </label><br>
+                    <textarea name="description"cols="30" rows="10" class="upload-media-from__input-textarea" placeholder="Description"></textarea><br>
+                    <input type="submit" value="Submit" class="upload-media__submit-button">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function FileInput(){
+            document.querySelector('.input__file-button-text').innerHTML = 'File is selected'
+        }
+    </script>
+{% endblock %}

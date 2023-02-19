@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'account/css/login_and_header.css' %}">
+    <link rel="stylesheet" href="{% static 'account/css/edit.css' %}">
+    <link rel="stylesheet" href="{% static 'account/css/images.css' %}">
+
+</head> 
+<body>
+    <div class="header">
+        <div class="header-container">
+            <div class="header-items">
+                <div class="logo">Ivfusoc - Image Video Friend User Social</div>
+                {% if request.user.is_authenticated %}
+                    <div class="service-list-container">
+                        <ul class="service-list">
+                            <li class="service-list-item">
+                                <a href="{% url 'dashboard' %}" class="service-list-item__link {% if section == 'dashboard' %}selected{% endif %}">My dashboard</a>
+                            </li>
+
+                            <li class="service-list-item">
+                                <a href="{% url 'images:media_list' %}" class="service-list-item__link {% if section == 'images' %}selected{% endif %}">Images</a>
+                            </li>
+
+                            <li class="service-list-item">
+                                <a href="{% url 'users' %}" class="service-list-item__link {% if section == 'people' %}selected{% endif %}">People</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="header-auth__links container">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="header-auth__links container">
+                        <a href="{% url 'login' %}" class="header-auth__link">Log in</a>
+                    </div>
+                    <style>
+                        .logo {
+                            margin-right: 700px;
+                        }
+                    </style>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{message.tegs}}">
+                    {{message|safe}}
+                    <a href="" class="close"></a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+        function like_func(id){
+      $(`a#${id}a`).on('click', function(e){
+        
+        e.preventDefault();
+        var csrftoken = Cookies.get('csrftoken')
+        function csrfSafeMethod(method){
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings){
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain){
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+          }
+        });
+        $.post(
+          '{% url "images:like" %}',
+          {id: $(this).data('id'),action: $(this).data('action')},
+          function(data){
+            if(data['status'] == 'ok'){
+              var previous_action = $(`a#${id}a`).data('action')
+              $(`a#${id}a`).data('action', previous_action == 'like' ? 'unlike' : 'like')
+              $(`a#${id}a`).text(previous_action == 'like' ? 'Unlike': 'Like')
+              var previous_likes = parseInt($(`p#${id}p`).text());
+              $(`p#${id}p`).text(
+                previous_action == 'like' ? previous_likes+1:previous_likes-1
+              );
+            }
+          });
+      });
+    }
+        
+    </script>
+</body>
+</html>

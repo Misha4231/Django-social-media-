@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block title %}{{ person.user.username }}{% endblock %}
+
+{% block content %}
+    <div class="people">
+        <div class="people-container">
+            <span>{{ person.user.username }}</span>
+            <span><img src="{{person.photo.url}}" alt="" height="50px" width="50px"></span>
+            <p>{{ person.user.get_full_name }}</p>
+            <ul>
+                {% for m in media %}
+                      <li class="media-list-item__cont">
+                        {% if m.file.name|lower|slice:'-4:' == '.jpg' or m.file.name|lower|slice:'-5:' == '.jpeg' %}
+                          <div class="media-list-item-photo-cont">
+                            {% thumbnail m.file "600" as im %}
+                              <img class="media-list-item__photo" src="{{ im.url }}" alt="">
+                            {% endthumbnail %}
+                          </div>
+                        {% elif m.file.name|lower|slice:'-4:' == '.mp4' %}
+                          <video controls id="my-video" class="video-js" preload="auto" data-setup="{}" height="350" width="600">
+                            <source src="{{m.file.url}}" type="video/mp4">
+                            <source src="{{m.file.url}}" type="video/webm"/>
+                          </video>
+                        {% endif %}
+                        
+                        <div class="media-list-item-info">
+                          <div class="media-list-item-likes">
+                            <a onclick="like_func('{{m.id}}')" id="{{m.id}}a" class="media-list-item-likes-link like button" href="#" data-id="{{ m.id }}" data-action="{% if request.user in m.users_like.all %}un{% endif %}Like">{% if request.user in m.users_like.all %}Unlike{% else %}Like{% endif %}</a><br>
+                            <span class="total" id="{{m.id}}p">{{ m.users_like.count }} </span><span>Like{{ m.users_like.count|pluralize }}</span> 
+                          </div>
+                          <div class="media-list-item-info-main">
+                            <h3 class="media-list-item-info-h3">{{ m.title }}</h3> <span>{{ m.created }}</span>
+                          </div>
+                          <p class="media-list-item-info-desc" data-full-text="{{ m.description }}">{{ m.description|truncatewords:20 }}</p>
+                        </div>
+                      </li>
+                    {% endfor %}
+            </ul>        
+        </div>
+    </div>
+{% endblock %}

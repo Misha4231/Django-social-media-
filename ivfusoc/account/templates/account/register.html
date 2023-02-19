@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Create an account{% endblock %}
+
+{% block content %}
+<div class="password-reset">
+    <div class="password-reset-container">
+        <div class="password-reset_items">
+            <h1 class="password-reset__main-text">Create an account</h1>
+            <form action="." method="post" class="password-reset__form">
+                {% csrf_token %}
+                <p class="password-reset__from-input-p">
+                    Username <br><input type="text" name="username">
+                </p>
+                <p class="password-reset__from-input-p">
+                    Email <br><input type="email" name="email">
+                </p>
+                <p class="password-reset__from-input-p">
+                    Name <br><input type="text" name="first_name">
+                </p>
+                <p class="password-reset__from-input-p">
+                    Password <br><input type="password" name="password">
+                </p>
+                <p class="password-reset__from-input-p">
+                    Repeat password <br><input type="password" name="password2">
+                </p>
+                <input type="submit" value="Submit" class="password-reset__submit-button">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

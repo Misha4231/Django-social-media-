@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}People search{% endblock %}
+
+{% block content %}
+    <div class="people">
+        <div class="people-container">
+            <div class="people-items">
+                <form action="." method="get" class="people-search-form">
+                    <input type="text" name="query" class="people-search-form-input">
+                    <input type="submit" value="Search" class="people-search-form-submit">
+                </form>
+                <div class="people-list">
+                    {% if query %}
+                        <ul class="people-list-ul">
+                            {% for user in results %}
+                                
+                                    <li class="people-list-ul-item">
+                                        <a href="{{ user.profile.get_absolute_url }}">
+                                        <div class="people-list-ul-item-cont">
+                                            <img src="{{user.profile.photo.url}}" alt="" height="30px" width="30px">
+                                            <p class="people-list-ul-item-link">{{ user.username }}</p>
+                                        </div>
+                                    </a>
+                                    </li>
+                                
+                            {% empty %}
+                                <li class="people-list-ul-item-empty">No results</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

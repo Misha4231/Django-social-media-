@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit your profile{% endblock %}
+
+{% block content %}
+    <div class="edit">
+        <div class="edit-successfull-edit">
+            {% if request.method == 'POST' %}
+                <p class="edit-successfull-edit-p">
+   
+                        Your profile data successfully saved <img class="edit-successfull-edit-image" src="{% static "account/img/tick.png" %}" alt="" height="25px" width="25px">
+                        <a href="{% url 'dashboard' %}">Dashboard</a>
+                </p>
+            {% endif %}
+        </div>
+        <div class="edit-container">
+            <div class="edit-items">
+                <h1 class="edit__main-text">Edit your profile</h1>
+                {% with request.user as user %}
+                    <form action="." method="post" enctype="multipart/form-data" class="edit-form">
+                        {% csrf_token %}
+                        <p class="edit__from-input-p">
+                            First name <br><input type="text" name="first_name" value="{{ user.first_name }}">
+                        </p>
+                        <p class="edit__from-input-p">
+                            Last name <br><input type="text" name="last_name" value="{{ user.last_name }}">
+                        </p>
+                        <p class="edit__from-input-p">
+                            Email <br><input type="email" name="email" value="{{ user.email }}">
+                        </p>
+                        <p class="edit__from-input-p">
+                            Date of birth <br><input type="date" name="date_of_birth" value="{{ user.profile.date_of_birth }}">
+                        </p>
+                            <p class="edit__from-input-p">
+                                Photo <br><input type="file" name="photo">
+                                <img src="{{ user.profile.photo.url }}" alt="" height="50px" width="50px">
+                            </p>
+
+                        <input type="submit" value="Submit" class="edit-form__button">
+                    </form>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
